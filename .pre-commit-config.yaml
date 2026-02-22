@@ -1,6 +1,6 @@
 # Usage
-# uvx run pre-commit install
-# uvx run pre-commit run --all-files
+# uvx pre-commit install
+# uvx pre-commit run --all-files
 
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit

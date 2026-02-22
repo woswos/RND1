@@ -44,7 +44,7 @@ select = [
     "PIE",
 ]
 task-tags = ["TODO", "FIXME"]
-ignore = ["D417", "D10", "F841", "E501"]
+ignore = ["D417", "D10", "E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]
