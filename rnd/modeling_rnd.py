@@ -311,7 +311,7 @@ class RND1PreTrainedModel(PreTrainedModel):
         for module in model_core.modules():
             if isinstance(module, Qwen3MoeRotaryEmbedding) and hasattr(module, "inv_freq"):
                 inv_freq, attention_scaling = (
-                    Qwen3MoeRotaryEmbedding.compute_default_rope_parameters(config, device)
+                    Qwen3MoeRotaryEmbedding.compute_default_rope_parameters(_model.config, device)
                 )
                 module.inv_freq = inv_freq
                 module.attention_scaling = attention_scaling
