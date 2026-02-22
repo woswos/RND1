@@ -37,7 +37,9 @@ def apply_top_p_filtering(logits: torch.Tensor, p: float) -> torch.Tensor:
     sorted_indices_to_remove[..., 0] = False  # Keep at least one token
     sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
 
-    indices_to_remove = sorted_indices_to_remove.scatter(-1, sorted_indices, sorted_indices_to_remove)
+    indices_to_remove = sorted_indices_to_remove.scatter(
+        -1, sorted_indices, sorted_indices_to_remove
+    )
     return logits.masked_fill(indices_to_remove, float("-inf"))
 
 
@@ -91,10 +93,7 @@ def diffusion_sample(
     """
     model.eval()
 
-    if device is None:
-        device = next(model.parameters()).device
-    else:
-        device = torch.device(device)
+    device = next(model.parameters()).device if device is None else torch.device(device)
 
     if pad_token_id is None:
         pad_token_id = 0

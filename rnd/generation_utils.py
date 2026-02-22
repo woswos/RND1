@@ -63,7 +63,9 @@ class RND1GenerationMixin(HFGenerationMixin):
             model_kwargs = kwargs.copy()
         else:
             # Only prepare config from kwargs if no config was provided
-            gen_config, model_kwargs = self._prepare_generation_config(RND1GenerationConfig(), **kwargs)
+            gen_config, model_kwargs = self._prepare_generation_config(
+                RND1GenerationConfig(), **kwargs
+            )
 
         device = next(self.parameters()).device
 
@@ -80,7 +82,9 @@ class RND1GenerationMixin(HFGenerationMixin):
         eos_token_id = gen_config.eos_token_id or getattr(self.config, "eos_token_id", 151645)
         pad_token_id = gen_config.pad_token_id or getattr(self.config, "pad_token_id", 151643)
         bos_token_id = gen_config.bos_token_id or getattr(self.config, "bos_token_id", None)
-        mask_token_id = getattr(gen_config, "mask_token_id", getattr(self.config, "mask_token_id", 151669))
+        mask_token_id = getattr(
+            gen_config, "mask_token_id", getattr(self.config, "mask_token_id", 151669)
+        )
 
         if infill_length is not None and prefix_ids is not None:
             # Infilling mode: use specified infill_length
@@ -108,7 +112,9 @@ class RND1GenerationMixin(HFGenerationMixin):
         eb_gamma = getattr(gen_config, "eb_gamma", None)
 
         greedy = getattr(
-            gen_config, "greedy", not bool(gen_config.do_sample) if hasattr(gen_config, "do_sample") else True
+            gen_config,
+            "greedy",
+            not bool(gen_config.do_sample) if hasattr(gen_config, "do_sample") else True,
         )
 
         with torch.inference_mode():
