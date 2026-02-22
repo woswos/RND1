@@ -11,8 +11,6 @@ The default settings are derived from Qwen/Qwen3-30B-A3B and augmented
 with RND1-specific parameters.
 """
 
-from packaging import version
-from transformers import __version__
 from transformers.configuration_utils import PretrainedConfig
 from transformers.utils import logging
 
@@ -51,14 +49,6 @@ CONFIG_DEFAULTS = {
     "use_sliding_window": False,
     "vocab_size": 151936,
 }
-
-
-# For transformers <= 4.57.0, rope_parameters is not supported
-# Instead, use rope_scaling and rope_theta as separate parameters
-if version.parse(__version__) <= version.parse("4.57.0"):
-    CONFIG_DEFAULTS.pop("rope_parameters", None)
-    CONFIG_DEFAULTS["rope_scaling"] = False
-    CONFIG_DEFAULTS["rope_theta"] = 1000000.0
 
 
 class RND1Config(PretrainedConfig):
