@@ -6,11 +6,6 @@ __pycache__/
 # Temp files
 profiler_traces/
 
-# Agent files and commonly used patters for agentic coding
-RISA.md
-.risa/
-AGENTS.md
-TASK.md
 
 # data
 data/
@@ -168,6 +163,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+debug/
 
 # Spyder project settings
 .spyderproject

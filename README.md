@@ -25,17 +25,13 @@ For more details, see:
 
 ## Installation
 
+Using a Python 3.12 environment:
 ```bash
-# tested with Python 3.12
-pip install torch transformers accelerate numpy rich
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install -e .
 ```
 
-```bash
-# backends enable faster inference through optimized MoE kernels:
-pip install flashinfer-python
-pip install sglang[all]
-pip install vllm
-```
 
 ## Quick Start
 
@@ -43,32 +39,29 @@ pip install vllm
 
 ```bash
 # Task mode (default) - for instructions, questions, or requests
-python demo_rnd_generation.py --prompt "Write a Python function that finds the longest common subsequence of two strings. Include comments explaining the algorithm." --moe_backend hf
+python demo_rnd_generation.py --prompt "Write a Python function that finds the longest common subsequence of two strings. Include comments explaining the algorithm."
 
 # Completion mode - for text continuation
-python demo_rnd_generation.py --mode completion --prompt "The key to understanding quantum computing lies in" --moe_backend hf
+python demo_rnd_generation.py --mode completion --prompt "The key to understanding quantum computing lies in"
 
 # Sampling parameters
-python demo_rnd_generation.py --top_k 50 --temperature 0.7 --prompt "Explain how neural networks learn in simple terms" --moe_backend hf
+python demo_rnd_generation.py --top-k 50 --temperature 0.7 --prompt "Explain how neural networks learn in simple terms"
 ```
 
 
-> [!WARNING]
-> Selecting a non-Huggingface MoE backend is highly encouraged for faster generation. Note however that non-HF backends currently support a single GPU only, so you need to set e.g. `export CUDA_VISIBLE_DEVICES=0` before running the script. If you use `flashinfer-python`, JIT compilation the first time the code is run may take a while unless `flashinfer-jit-cache` is installed.
 
 ### Demo Parameters
 
 - `--mode`: Generation mode - 'task' or 'completion' (default: task)
   - `task`: For instructions, questions, or requests (adds "Question:" prefix)
   - `completion`: For text continuation (no prefix added)
-- `--max_new_tokens`: Number of new tokens to generate (default: 256)
-- `--num_steps`: Diffusion denoising steps (default: 256)
+- `--max-new-tokens`: Number of new tokens to generate (default: 256)
+- `--num-steps`: Diffusion denoising steps (default: 256)
 - `--temperature`: Sampling temperature, 0.0 for greedy (default: 0.01)
-- `--top_k`: Top-k filtering - keeps only k most likely tokens (works with greedy and sampling)
-- `--top_p`: Nucleus filtering - keeps tokens with cumulative probability ≤ p (works with greedy and sampling)
-- `--moe_backend`: Choose backend: hf, vllm, sglang, flashinfer (default: hf)
-- `--no_viz`: Disable visualization
-- `--add_eos_at_end`: Add End of Sequence (EOS) token at the end of the sequence; useful to force the model to come to a coherent end (default: False)
+- `--top-k`: Top-k filtering - keeps only k most likely tokens (works with greedy and sampling)
+- `--top-p`: Nucleus filtering - keeps tokens with cumulative probability ≤ p (works with greedy and sampling)
+- `--no-viz`: Disable visualization
+- `--add-eos-at-end` / `--no-add-eos-at-end`: Add EOS token at the end of the sequence to force coherent endings (default: True)
 
 ## Python API
 
@@ -85,7 +78,6 @@ model = RND1LM.from_pretrained(
     dtype="bfloat16",
     device_map="auto",
     trust_remote_code=True,
-    moe_backend="hf", # hf (default), sglang, vllm, flashinfer
 )
 
 # Generate - Task mode (for instructions and questions)
@@ -123,15 +115,15 @@ print(text)
 ## Project Structure
 
 ```
-RND_dev/
+RND1/
 ├── README.md                    # This file
 ├── demo_rnd_generation.py       # Demo script with command-line interface
 └── rnd/                         # Core RND1 package
     ├── __init__.py              # Package exports
     ├── configuration_rnd.py     # RND1 model configuration
-    ├── modeling_rnd.py          # Core model implementation
     ├── generation_config.py     # Generation configuration
     ├── generation_utils.py      # Generation mixin and utilities
+    ├── modeling_rnd.py          # Core model implementation
     ├── sampling.py              # Diffusion sampling algorithm
     └── terminal_visualizer.py   # Live visualization (optional)
 ```

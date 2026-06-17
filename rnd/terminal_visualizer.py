@@ -20,7 +20,13 @@ try:
     from rich.layout import Layout
     from rich.live import Live
     from rich.panel import Panel
-    from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn, TimeRemainingColumn
+    from rich.progress import (
+        BarColumn,
+        MofNCompleteColumn,
+        Progress,
+        TextColumn,
+        TimeRemainingColumn,
+    )
     from rich.text import Text
 
     RICH_AVAILABLE = True
@@ -48,7 +54,9 @@ class TerminalVisualizer:
         self.tokenizer = tokenizer
         self.show_visualization = show_visualization and RICH_AVAILABLE
         if not RICH_AVAILABLE and show_visualization:
-            print("Warning: Install 'rich' for better visualization. Falling back to simple progress bar.")
+            print(
+                "Warning: Install 'rich' for better visualization. Falling back to simple progress bar."
+            )
             self.show_visualization = False
 
         if self.show_visualization:
@@ -64,7 +72,9 @@ class TerminalVisualizer:
         self.total_steps = 0
         self.current_step = 0
 
-    def start_visualization(self, initial_tokens: torch.LongTensor, mask_positions: torch.BoolTensor, total_steps: int):
+    def start_visualization(
+        self, initial_tokens: torch.LongTensor, mask_positions: torch.BoolTensor, total_steps: int
+    ):
         """
         Start the visualization.
 
@@ -84,7 +94,9 @@ class TerminalVisualizer:
 
         self.layout = Layout()
         self.layout.split_column(
-            Layout(name="header", size=3), Layout(name="text", ratio=1), Layout(name="progress", size=3)
+            Layout(name="header", size=3),
+            Layout(name="text", ratio=1),
+            Layout(name="progress", size=3),
         )
 
         self.progress = Progress(
@@ -95,7 +107,9 @@ class TerminalVisualizer:
             TextColumn("[cyan]Masks: {task.fields[masks]}"),
             TimeRemainingColumn(),
         )
-        self.progress_task = self.progress.add_task("Generating", total=total_steps, masks=mask_positions.sum().item())
+        self.progress_task = self.progress.add_task(
+            "Generating", total=total_steps, masks=mask_positions.sum().item()
+        )
 
         self.live = Live(self.layout, console=self.console, refresh_per_second=4)
         self.live.start()
@@ -178,13 +192,22 @@ class TerminalVisualizer:
             if mask_flags is not None and i < len(mask_flags) and mask_flags[i]:
                 # Alternate colors for visual effect
                 text.append(
-                    "[MASK]", style="bold red on yellow" if self.current_step % 2 == 0 else "bold yellow on red"
+                    "[MASK]",
+                    style="bold red on yellow"
+                    if self.current_step % 2 == 0
+                    else "bold yellow on red",
                 )
             else:
                 try:
                     token_str = self.tokenizer.decode([token_id.item()], skip_special_tokens=False)
                     # Skip special tokens in display
-                    if token_str not in ["<|endoftext|>", "<|im_start|>", "<|im_end|>", "<s>", "</s>"]:
+                    if token_str not in [
+                        "<|endoftext|>",
+                        "<|im_start|>",
+                        "<|im_end|>",
+                        "<s>",
+                        "</s>",
+                    ]:
                         # Color based on position
                         text.append(token_str, style="green" if i < len(token_ids) // 2 else "cyan")
                 except Exception:
@@ -208,11 +231,20 @@ class TerminalVisualizer:
             # Display final text
             if self.current_tokens is not None:
                 try:
-                    token_ids = self.current_tokens[0] if self.current_tokens.dim() > 1 else self.current_tokens
+                    token_ids = (
+                        self.current_tokens[0]
+                        if self.current_tokens.dim() > 1
+                        else self.current_tokens
+                    )
                     final_text = self.tokenizer.decode(token_ids, skip_special_tokens=True)
 
                     self.console.print(
-                        Panel(final_text, title="[bold]Final Generated Text", border_style="green", padding=(1, 2))
+                        Panel(
+                            final_text,
+                            title="[bold]Final Generated Text",
+                            border_style="green",
+                            padding=(1, 2),
+                        )
                     )
                 except Exception:
                     pass

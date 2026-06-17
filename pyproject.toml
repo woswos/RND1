@@ -8,30 +8,43 @@ version = "0.1.0"
 dependencies = [
     "accelerate",
     "torch>=2.8",
-    "transformers",
+    "transformers>=5.0.0",
     "rich"
 ]
 
 [project.optional-dependencies]
-flashinfer = [
-    "flashinfer-python",
-]
-sglang = ["sglang[all]"]
-vllm = ["vllm"]
 linting = ["ruff>=0.13.2", "pre-commit>=4.0.0"]
 
 [tool.setuptools]
 packages = ["rnd"]
 
 [tool.ruff]
-line-length = 120
+line-length = 100
 target-version = "py311"
 show-fixes = false
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "I001", "UP"]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # flake8-bugbear
+    "B",
+    # pyupgrade
+    "UP",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # unsafe yaml loading
+    "S506", 
+    # flake8-pie
+    "PIE",
+]
 task-tags = ["TODO", "FIXME"]
+ignore = ["D417", "D10", "E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]

@@ -12,6 +12,9 @@ with RND1-specific parameters.
 """
 
 from transformers.configuration_utils import PretrainedConfig
+from transformers.utils import logging
+
+logger = logging.get_logger(__name__)
 
 # Qwen3-30B-A3B / checkpoint defaults
 CONFIG_DEFAULTS = {
@@ -37,8 +40,7 @@ CONFIG_DEFAULTS = {
     "output_router_logits": False,
     "pad_token_id": 151643,
     "rms_norm_eps": 1e-06,
-    "rope_scaling": False,
-    "rope_theta": 1000000.0,
+    "rope_parameters": {"rope_type": "default", "rope_theta": 1000000.0},
     "router_aux_loss_coef": 0.001,
     "sliding_window": False,
     "tie_word_embeddings": False,
@@ -57,7 +59,6 @@ class RND1Config(PretrainedConfig):
     specific to the RND1 (Radical Numerics Diffusion v1) architecture.
 
     Args:
-        moe_backend: Backend for MoE computation ("hf", "vllm", "sglang" or "flashinfer")
         num_diffusion_steps: Default number of diffusion steps for generation
         mask_token_id: Token ID used for masking (default: 151669 for Qwen)
         **kwargs: Additional arguments passed to Qwen3MoeConfig
@@ -67,7 +68,6 @@ class RND1Config(PretrainedConfig):
 
     def __init__(
         self,
-        moe_backend: str = "hf",
         num_diffusion_steps: int = 256,
         mask_token_id: int = 151669,
         **kwargs,
@@ -86,7 +86,6 @@ class RND1Config(PretrainedConfig):
             self._attn_implementation = kwargs["attn_implementation"]
 
         # RND1-specific parameters
-        self.moe_backend = moe_backend
         self.num_diffusion_steps = num_diffusion_steps
         self.mask_token_id = mask_token_id
 
